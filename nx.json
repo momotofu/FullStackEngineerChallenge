@@ -1,0 +1,46 @@
+{
+  "npmScope": "pay-pay",
+  "affected": {
+    "defaultBase": "master"
+  },
+  "implicitDependencies": {
+    "workspace.json": "*",
+    "package.json": {
+      "dependencies": "*",
+      "devDependencies": "*"
+    },
+    "tsconfig.base.json": "*",
+    "tslint.json": "*",
+    ".eslintrc.json": "*",
+    "nx.json": "*"
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "runner": "@nrwl/workspace/tasks-runners/default",
+      "options": {
+        "cacheableOperations": ["build", "lint", "test", "e2e"]
+      }
+    }
+  },
+  "projects": {
+    "fs-challenge": {
+      "tags": []
+    },
+    "fs-challenge-e2e": {
+      "tags": [],
+      "implicitDependencies": ["fs-challenge"]
+    },
+    "api": {
+      "tags": []
+    },
+    "api-interfaces": {
+      "tags": []
+    },
+    "ui": {
+      "tags": []
+    },
+    "utils": {
+      "tags": []
+    }
+  }
+}
