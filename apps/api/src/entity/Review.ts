@@ -3,8 +3,6 @@ import {
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
-  OneToOne,
-  JoinColumn,
 } from 'typeorm';
 
 import Employee from './Employee';
@@ -14,9 +12,6 @@ export default class Review {
 
   @PrimaryGeneratedColumn()
   id: number;
-
-  @Column()
-  dateCreated: string;
 
   /**
    * Review form information start.
@@ -51,9 +46,8 @@ export default class Review {
    * Review form information end.
    */
 
-  @OneToOne(type => Employee)
-  @JoinColumn()
-  assignedTo: Employee;
+  @Column({ nullable: true })
+  assignedTo: number;
 
   @ManyToOne(() => Employee, employee => employee.reviews)
   ownedBy: Employee;
