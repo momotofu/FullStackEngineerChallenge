@@ -1,10 +1,9 @@
-import { Express } from 'express';
 import bcrypt from 'bcrypt';
 
 
 export function addLoginRoute(
-  app: Express,
-  prefix: string,
+  app,
+  prefix,
   employeeRepo,
 ) {
   app.post(`${prefix}/login`, async (req, res, next) => {

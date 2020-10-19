@@ -1,6 +1,6 @@
 export function addIndexRoute(
   prefix: string,
-  app: Express,
+  app,
   employeeRepo,
   reviewRepo
 ) {
