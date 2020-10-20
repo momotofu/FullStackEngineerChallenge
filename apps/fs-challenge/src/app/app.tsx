@@ -1,4 +1,4 @@
-import { prependOnceListener } from 'process';
+// Package imports
 import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter as Router,
@@ -6,6 +6,10 @@ import {
   Route,
   Redirect,
 } from "react-router-dom";
+
+// Local imports
+import { Login } from './pages/login';
+
 
 export const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,7 +35,7 @@ export const App = () => {
               }
             </ProtectedRoute>
             <Route path='/login'>
-              <div>Login page</div>
+              <Login />
             </Route>
             <ProtectedRoute path='/admin' isLoggedIn={isLoggedIn}>
               <div>Admin page</div>

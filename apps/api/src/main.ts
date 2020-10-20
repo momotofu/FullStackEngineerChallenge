@@ -2,6 +2,7 @@
 import * as express from 'express';
 import "reflect-metadata";
 import session from 'express-session';
+import logger from 'morgan';
 
 // Local imports
 import { dbConnector } from './ormconfg';
@@ -11,7 +12,7 @@ import { getSeeds } from './seed';
 
 getSeeds().then(seeds => {
   const shouldSeed = process.env.NODE_ENV === 'development';
-  
+
   dbConnector(shouldSeed ? seeds : false ).then(conn => {
     const employeeRepository = conn.getRepository('Employee');
     const reviewRepository = conn.getRepository('Review');
@@ -29,7 +30,10 @@ getSeeds().then(seeds => {
     }
 
     // Configure express app
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: false }));
     app.use(session(sessConfig));
+    app.use(logger('dev'));
     app.use(isLoggedIn);
 
     // Add routes
