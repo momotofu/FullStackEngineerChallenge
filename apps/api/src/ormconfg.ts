@@ -22,18 +22,49 @@ const config = {
   }
 };
 
-function getDBConnector(config): Function {
-  return () => {
+
+/**
+ * Function that configuress a TypoORM database connecter.
+ * It returns a function that will return the configured 
+ * connector as a Promise. If seeds are passed into the 
+ * returned function, seed data will be generated (if it hasn't
+ * been already). 
+ * 
+ * Seeds shape is [ seedName, [ seedData ] ]
+ * 
+ * @param config 
+ * @param seeds 
+ * 
+ */
+function getDBConnector(config) {
+  return async seeds => {
+    if (seeds) {
+      const conn = await createConnection(config);
+
+      seeds.forEach(async seed => {
+        const [ seedName, seedData ] = seed;
+        const repo = conn.getRepository(seedName);
+
+        await seedData.forEach(async data => {
+          const entity = await repo.create(data);
+          const foundEntity = await repo.findOne({ email: entity.email });
+
+          if(foundEntity) {
+            // Database has already been seeded
+            return;
+          }
+
+          const result = await repo.save(entity);
+          console.log(`Seeded: ${Object.keys(result)} into database`);
+        });
+      });
+     
+
+      return new Promise(resolve => resolve(conn));
+    }
+
     return createConnection(config);
   };
 }
 
-/**
- * Returns a Promise that if resolved returns
- * a connection to the configured mysql database
- * or an error that can be destructured from the
- * returned array.
- * 
- * i.g. const [connection, error] = dbConnector()
- */
 export const dbConnector: Function = getDBConnector(config);
