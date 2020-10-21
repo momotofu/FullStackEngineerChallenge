@@ -28,7 +28,7 @@ export const App = () => {
   const [isApiFetching, setIsApiFetching] = useState(true);
   const [pageTitle, setPageTitle] = useState('');
   const [showNav, setShowNav] = useState(false);
-  const [showNavBackButton, setShowNavBackButton] = useState(true);
+  const [showNavBackButton, setShowNavBackButton] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn) {

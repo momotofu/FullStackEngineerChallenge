@@ -31,9 +31,16 @@ export const Admin = (props) => {
 
   return (
     <>
-      {renderEmployees(employees)}
+      {renderEmployees(employees, onEmployeeClick(appControls))}
     </>
   )
+}
+
+function onEmployeeClick(appControls) {
+  return event => {
+    //event.preventDefault();
+    appControls.showNavBackButton(true);
+  }
 }
 
 

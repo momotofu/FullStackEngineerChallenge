@@ -1,5 +1,6 @@
 // Package imports
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Container,
   CssBaseline,
@@ -24,9 +25,10 @@ const useStyles = makeStyles((them) => ({
 
 export const Page = (props) => {
   const { children, showNav, title, showBackButton } = props;
+  const history = useHistory();
   const classes = useStyles();
   const appControls = useContext(APIContext);
-  const logoutURL = '/api/logout'
+  const logoutURL = '/api/logout';
 
   return (
     <Container className={classes.container} component='main' maxWidth='lg'>
@@ -38,7 +40,7 @@ export const Page = (props) => {
                     ? renderBackButton(history, appControls)
                     : ''
                 }
-                <Typography className={classes.title} variant="h6">
+                <Typography className={classes.title} variant='h6'>
                   {title}
                 </Typography>
                 <Button
