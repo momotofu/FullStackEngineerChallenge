@@ -16,7 +16,7 @@ const employees = async () => {
       'My name is the name of one of the three wise men that visited baby Jesus.',
       'https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg',
       await genHash('12'),
-      true,
+      false,
     ],
     [
       'Ray',
@@ -24,7 +24,7 @@ const employees = async () => {
       'My personality is like a bright and colorful stream of light. My name has cool and kind kanji associated with it',
       'https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg',
       await genHash('123'),
-      true,
+      false,
     ],
     [
       'Julian',
@@ -32,7 +32,7 @@ const employees = async () => {
       'I was born in Fiji, and I learned how to program and meditate in the Tech Monestary.',
       'https://st3.depositphotos.com/4111759/13425/v/450/depositphotos_134255626-stock-illustration-avatar-male-profile-gray-person.jpg',
       await genHash('1234'),
-      true,
+      false,
     ],
   ]
 

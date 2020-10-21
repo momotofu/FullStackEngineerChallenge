@@ -8,6 +8,7 @@ import logger from 'morgan';
 import { dbConnector } from './ormconfg';
 import { isLoggedIn } from './app/utils';
 import { addLoginRoute } from './app/routes/login';
+import { addIndexRoute } from './app/routes/';
 import { getSeeds } from './seed';
 
 getSeeds().then(seeds => {
@@ -26,7 +27,7 @@ getSeeds().then(seeds => {
     
     if (process.env.NODE_ENV === 'production') {
       app.set('trust proxy', 1) // trust first proxy
-      sessConfig.cookie.secure = true // serve secure cookies
+      sessConfig.cookie.secure = true
     }
 
     // Configure express app
@@ -36,8 +37,9 @@ getSeeds().then(seeds => {
     app.use(logger('dev'));
     app.use(isLoggedIn);
 
-    // Add routes
+    // Add routes to app
     addLoginRoute(app, apiPrefix, employeeRepository);
+    addIndexRoute(app, apiPrefix, employeeRepository, reviewRepository);
 
     app.get(apiPrefix, (req, res) => {
       res.send({ message: 'Hello World'});

@@ -1,5 +1,6 @@
-// Package import
-import React, { useState } from 'react';
+// Package imports
+import React, { useState, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import {
   Container,
   Typography,
@@ -8,6 +9,9 @@ import {
   CssBaseline,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+
+// Local imports
+import { APIContext } from '../../app';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -33,6 +37,8 @@ const formURL = '/api/login';
 
 export const Login = () => {
   const classes = useStyles();
+  const history = useHistory();
+  const appControls = useContext(APIContext);
   const initialState = {
     email: '',
     password: '',
@@ -42,7 +48,7 @@ export const Login = () => {
   const { email, password } = state;
 
   return (
-    <Container component='main' maxWidth='xs'>
+    <Container component='div' maxWidth='xs'>
       <CssBaseline />
       <div className={classes.paper}>
         <Typography component='h1' variant='h5'>
@@ -50,7 +56,7 @@ export const Login = () => {
         </Typography>
         <form
           className={classes.form}
-          onSubmit={onFormSubmit(state, formURL)}
+          onSubmit={onFormSubmit(state, formURL, history, appControls)}
           noValidate
         >
           <TextField
@@ -128,7 +134,7 @@ function handleChange(stateKey, setState) {
  * @param URL
  * @param history // Controls browser history 
  */
-function onFormSubmit(state, URL, history) {
+function onFormSubmit(state, URL, history, appControls) {
   return async event => {
     event.preventDefault();
 
@@ -141,6 +147,14 @@ function onFormSubmit(state, URL, history) {
     });
 
     const json = await response.json();
+    const route = json.route;
+
+    if (route == '/') {
+      history.push('/');
+      appControls.rehydrateAPI();
+      console.log('should route to index');
+    }
+
     console.log(`Form response: ${JSON.stringify(json)}`);
   }
 }

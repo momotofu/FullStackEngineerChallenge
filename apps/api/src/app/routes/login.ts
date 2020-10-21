@@ -39,8 +39,16 @@ export function addLoginRoute(
     // Log user into session
     req.session.employee = employee; 
 
-    // Reroute front-end 
     const response = { route: '/', msg: 'Successfully logged in' };
+    res.send(response);
+  });
+
+  app.get(`${prefix}/logout`, (req, res) => {
+    req.session.destroy(() => {
+      console.log("User logged out");
+    });
+
+    const response = { route: '/login', msg: 'User logged out' };
     res.send(response);
   });
 }

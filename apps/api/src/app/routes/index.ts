@@ -1,11 +1,17 @@
 export function addIndexRoute(
-  prefix: string,
   app,
+  prefix,
   employeeRepo,
   reviewRepo
 ) {
   app.get(prefix, async (req, res) => {
     const employee = req.session.employee;
+
+    if (employee == undefined) {
+      const response = { error: 'Not logged in' };
+      return res.send(response);
+    }
+
     const isAdmin = employee.isAdmin;
     
     const employeeDetails = {
