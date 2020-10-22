@@ -1,4 +1,4 @@
-import { genHash } from '../utils';
+import { genHash, adminOnlyRoute } from '../utils';
 
 export function addEmployeeRoute(
   app,
@@ -51,9 +51,11 @@ export function addEmployeeRoute(
     res.send(response);
   });
 
-  app.post(`${prefix}/employee/new`, async (req, res) => {
+  app.post(`${prefix}/employee/new`, adminOnlyRoute, async (req, res) => {
     const { employee } = req.body;
-    console.log('rew body', JSON.stringify(req.body));
+
+
+    // Default password is employees email
     const email = employee.email;
     const passwordHash = await genHash(email);
 
@@ -61,6 +63,19 @@ export function addEmployeeRoute(
 
     const entity = await employeeRepo.create(employee);
     const results = await employeeRepo.save(entity);
+
+    res.send(results);
+  });
+
+  app.put(`${prefix}/employee/:id`, adminOnlyRoute, async (req, res) => {
+    const { employee } = req.body;
+    const { id } = req.params;
+
+    const employeeQuery = { where: { id }};
+    const entity = await employeeRepo.findOne(employeeQuery);
+
+    employeeRepo.merge(entity, employee);
+    const results = await employeeRepo.save(entity)
 
     res.send(results);
   });

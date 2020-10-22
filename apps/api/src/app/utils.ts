@@ -16,8 +16,24 @@ export function isLoggedIn(req, res, next) {
 
   if (!req.session.employee && !isLoginRoute) {
     const response = { route: '/login', error: 'Employee not logged in' };
-    res.json(response);
-  } else {
-    next();
+    return res.json(response);
   }
+  
+  next();
+}
+
+// If employee doesn't have admin permissions block this route
+export function adminOnlyRoute(req, res, next) {
+  const user = req.session.employee;
+  const isAdmin = user.isAdmin;
+
+  // If employee doesn't have admin access they can't access this route
+  if (!isAdmin) {
+    res.status(400);
+    const response = { error: 'You do not have permission to access this route' };
+
+    return res.send(response);
+  }
+
+  next();
 }

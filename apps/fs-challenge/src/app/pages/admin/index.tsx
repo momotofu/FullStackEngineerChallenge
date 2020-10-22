@@ -88,7 +88,7 @@ function renderEmployees(employees, classes, callback) {
         >
           <ListItemText primary={name} />
           <ButtonGroup variant="text" color="primary" aria-label="text primary button group">
-            <Button>edit</Button>
+            <Button component={Link} to={`/employee/${id}/edit`}>edit</Button>
             <Button>delete</Button>
           </ButtonGroup>
         </ListItem>

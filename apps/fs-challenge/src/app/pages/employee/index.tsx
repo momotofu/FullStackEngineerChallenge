@@ -62,7 +62,7 @@ export const Employee = (props) => {
   const classes = useStyles();
   const history = useHistory();
   const appControls = useContext(APIContext);
-  const onSaveURL = '/api/employee/new';
+  const [ onSaveURL, method ] = getURLAndMethod(id);
 
   // If not admin, user cannot edit profile
   let mode: Mode = state == 'edit' && admin !== undefined
@@ -133,7 +133,7 @@ export const Employee = (props) => {
           color='primary'
           variant='contained'
           fullWidth
-          onClick={onButtonSave(employee, onSaveURL, history, appControls)}
+          onClick={onButtonSave(employee, onSaveURL, method, history, appControls)}
           >
           Save
         </Button>
@@ -154,6 +154,18 @@ export const Employee = (props) => {
     </Grid>
     </>
   )
+}
+
+function getURLAndMethod(id) {
+  const onSaveURL = id === 'null'
+    ? '/api/employee/new'
+    : `/api/employee/${id}`;
+  
+  const method = id === 'null'
+    ? 'POST'
+    : 'PUT'
+
+  return [ onSaveURL, method ];
 }
 
 function renderOwnedReviews(reviews, classes, callback) {
@@ -251,7 +263,7 @@ function onInputClick(stateKey, setState) {
   }
 }
 
-function onButtonSave(state, URL, history, appControls) {
+function onButtonSave(state, URL, method, history, appControls) {
   return async event => {
     event.preventDefault();
     delete state.assignedReviews;
@@ -259,7 +271,7 @@ function onButtonSave(state, URL, history, appControls) {
     const body = JSON.stringify({ employee: state });
 
     const response = await fetch(URL, {
-      method: 'POST',
+      method: method,
       body,
       headers: {
         'content-type': 'application/json'
@@ -269,7 +281,7 @@ function onButtonSave(state, URL, history, appControls) {
     const json = await response.json();
 
     history.push('/admin');
-    appControls.shoNavBackButton(false);
+    appControls.showNavBackButton(false);
     appControls.rehydrateAPI();
 
     console.log(`Form response: ${JSON.stringify(json)}`);
