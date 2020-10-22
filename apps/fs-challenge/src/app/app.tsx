@@ -61,6 +61,9 @@ export const App = () => {
 
         if (error) {
           console.log(`error: ${error}`);
+          setPayload({});
+          setIsAdmin(false);
+          setIsLoggedIn(false);
           setIsApiFetching(false);
           return;
         }

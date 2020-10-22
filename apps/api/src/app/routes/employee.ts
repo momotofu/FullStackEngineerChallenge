@@ -1,3 +1,5 @@
+import { genHash } from '../utils';
+
 export function addEmployeeRoute(
   app,
   prefix,
@@ -47,5 +49,19 @@ export function addEmployeeRoute(
     }
 
     res.send(response);
+  });
+
+  app.post(`${prefix}/employee/new`, async (req, res) => {
+    const { employee } = req.body;
+    console.log('rew body', JSON.stringify(req.body));
+    const email = employee.email;
+    const passwordHash = await genHash(email);
+
+    employee['passwordHash'] = passwordHash;
+
+    const entity = await employeeRepo.create(employee);
+    const results = await employeeRepo.save(entity);
+
+    res.send(results);
   });
 }

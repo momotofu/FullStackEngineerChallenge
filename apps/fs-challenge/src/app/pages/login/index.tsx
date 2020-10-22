@@ -152,6 +152,7 @@ function onFormSubmit(state, URL, history, appControls) {
     if (route == '/') {
       history.push('/');
       appControls.rehydrateAPI();
+      
       console.log('should route to index');
     }
 

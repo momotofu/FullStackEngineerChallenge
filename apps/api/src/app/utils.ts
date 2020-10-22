@@ -1,3 +1,14 @@
+// Package imports
+import bcrypt from 'bcrypt';
+
+// Returns a password hash using bycrypt
+export async function genHash(password) {
+  const saltRounds = 10;
+  const hash = bcrypt.hash(password, saltRounds);
+  return hash;
+}
+
+
 // Express middleware to check if employee is logged in. If not prompt front-end to route to loggin
 export function isLoggedIn(req, res, next) {
   const originalUrl = req.originalUrl;

@@ -1,4 +1,5 @@
-import bcrypt from 'bcrypt';
+// Local imports
+import { genHash } from './app/utils';
 
 const employees = async () => {
   const data = [
@@ -53,13 +54,6 @@ export const getSeeds = async () => {
 
   // console.log('seeds', seeds);
   return seeds;
-}
-
-// Returns a password hash using bycrypt
-export async function genHash(password) {
-  const saltRounds = 10;
-  const hash = bcrypt.hash(password, saltRounds);
-  return hash;
 }
 
 // Returns a Review object used to create a Review Entity

@@ -77,6 +77,8 @@ function onLogoutClick(URL, appControls) {
     const json = await response.json();
 
     appControls.logoutUser();
+    appControls.rehydrateAPI();
+    
     console.log(`Form response: ${JSON.stringify(json)}`);
   }
 }

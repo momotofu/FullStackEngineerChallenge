@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useHistory } from 'react-router-dom';
 import {
   Input,
   InputLabel,
@@ -11,7 +11,8 @@ import {
   Avatar,
   Typography,
   Button,
-  ButtonGroup,
+  Checkbox,
+  FormControlLabel,
 } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
@@ -32,6 +33,10 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     marginBottom: theme.spacing(2)
+  },
+  button: {
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(4)
   }
 }));
 
@@ -45,6 +50,7 @@ const initalEmployee = {
   bio: '',
   name: '',
   email: '',
+  isAdmin: false,
   reviews: [],
   assignedReviews: [],
 }
@@ -54,6 +60,9 @@ export const Employee = (props) => {
   const [ employee, setEmployee ] = useState(initalEmployee);
   const { id, state } = useParams();
   const classes = useStyles();
+  const history = useHistory();
+  const appControls = useContext(APIContext);
+  const onSaveURL = '/api/employee/new';
 
   // If not admin, user cannot edit profile
   let mode: Mode = state == 'edit' && admin !== undefined
@@ -66,6 +75,7 @@ export const Employee = (props) => {
     name,
     email,
     reviews,
+    isAdmin,
     assignedReviews,
   } = employee;
 
@@ -73,6 +83,10 @@ export const Employee = (props) => {
     // No need to fetch an employ because we're creating one.
     if (id === 'null') {
       return;
+    }
+
+    if (admin === undefined) {
+      appControls.showNavBackButton(false);
     }
 
     // Fetch employee data from the API
@@ -102,19 +116,29 @@ export const Employee = (props) => {
     <Grid container spacing={3}>
       <Grid item xs={4}>
         <Avatar alt={name} src={photoURL} className={classes.avatar} />
-        {renderTextField(mode, name, 'Name', classes)}
+        {renderTextField(mode, name, 'Name', classes, onInputClick('name', setEmployee))}
         {mode == Mode.Edit
-          ? renderTextField(mode, photoURL, 'Photo URL', classes)
+          ? renderTextField(mode, photoURL, 'Photo URL', classes, onInputClick('photoURL', setEmployee))
           : ''
         }
-        {renderTextField(mode, email, 'Email', classes)}
-        {renderTextField(mode, bio, 'Bio', classes)}
-      </Grid>
-      { admin && mode == Mode.Edit && <Grid item xs={8}>
-        <Button color='primary' variant='contained'>
+        {renderTextField(mode, email, 'Email', classes, onInputClick('email', setEmployee))}
+        {renderTextField(mode, bio, 'Bio', classes, onInputClick('bio', setEmployee))}
+      { admin && mode == Mode.Edit && <div>
+        <FormControlLabel
+          control={<Checkbox checked={isAdmin} onChange={onInputClick('isAdmin', setEmployee)} name='isAdmin' />}
+          label='Admin'
+        />
+        <Button
+          className={classes.button}
+          color='primary'
+          variant='contained'
+          fullWidth
+          onClick={onButtonSave(employee, onSaveURL, history, appControls)}
+          >
           Save
         </Button>
-      </Grid> }
+        </div>}
+      </Grid>
       { admin && <Grid item xs={12}>
         <Typography className={classes.title} component='h1' variant='h5'>
           {`${name}'s reviews`}
@@ -206,4 +230,48 @@ function renderTextField(
     />
     </>
   );
+}
+
+function onInputClick(stateKey, setState) {
+  return event => {
+    let value;
+
+    if (event.target.type === 'checkbox') {
+      value = event.target.checked;
+    } else {
+      value = event.target.value;
+    }
+
+    setState(prevState => {
+      return {
+        ...prevState,
+        [stateKey]: value,
+      }
+    })
+  }
+}
+
+function onButtonSave(state, URL, history, appControls) {
+  return async event => {
+    event.preventDefault();
+    delete state.assignedReviews;
+
+    const body = JSON.stringify({ employee: state });
+
+    const response = await fetch(URL, {
+      method: 'POST',
+      body,
+      headers: {
+        'content-type': 'application/json'
+      }
+    });
+
+    const json = await response.json();
+
+    history.push('/admin');
+    appControls.shoNavBackButton(false);
+    appControls.rehydrateAPI();
+
+    console.log(`Form response: ${JSON.stringify(json)}`);
+  }
 }
