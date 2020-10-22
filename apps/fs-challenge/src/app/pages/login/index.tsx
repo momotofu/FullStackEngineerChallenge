@@ -44,7 +44,7 @@ export const Login = () => {
     password: '',
   };
 
-  const [state, setState] = useState(initialState);
+  const [ state, setState ] = useState(initialState);
   const { email, password } = state;
 
   return (

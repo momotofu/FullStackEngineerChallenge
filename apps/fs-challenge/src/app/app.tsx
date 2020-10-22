@@ -12,7 +12,7 @@ import { CircularProgress } from '@material-ui/core';
 import { Page } from './components/page';
 import { Login } from './pages/login';
 import { Admin } from './pages/admin';
-import { SettingsOutlined } from '@material-ui/icons';
+import { Employee } from './pages/employee';
 
 /**
  * Sends setRehydrateAPI to children so components can
@@ -21,14 +21,15 @@ import { SettingsOutlined } from '@material-ui/icons';
 export const APIContext = React.createContext({});
 
 export const App = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [payload, setPayload] = useState({});
-  const [rehydrateAPI, setRehydrateAPI] = useState(false);
-  const [isApiFetching, setIsApiFetching] = useState(true);
-  const [pageTitle, setPageTitle] = useState('');
-  const [showNav, setShowNav] = useState(false);
-  const [showNavBackButton, setShowNavBackButton] = useState(false);
+  const [ isLoggedIn, setIsLoggedIn ] = useState(false);
+  const [ isAdmin, setIsAdmin ] = useState(false);
+  const [ payload, setPayload ] = useState({});
+  const [ employeeId, setEmployeeId ] = useState({});
+  const [ rehydrateAPI, setRehydrateAPI ] = useState(false);
+  const [ isApiFetching, setIsApiFetching ] = useState(true);
+  const [ pageTitle, setPageTitle ] = useState('');
+  const [ showNav, setShowNav ] = useState(false);
+  const [ showNavBackButton, setShowNavBackButton ] = useState(false);
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -48,48 +49,45 @@ export const App = () => {
      * privliges or not.
      */
     fetch('/api')
-      .then((r) => r.json())
-      .then((res) => {
+      .then(r => r.json())
+      .then(res => {
         const {
           employee,
           isAdmin,
-          reviews,
           employees,
+          employeeId,
           error,
         } = res;
 
         if (error) {
           console.log(`error: ${error}`);
+          setIsApiFetching(false);
+          return;
         }
 
         // Check if user has logged in and update related state
-        if (employee) {
           if (isAdmin) {
             setPayload({
-              employee,
+              admin: employee,
               employees,
             });
 
             setIsAdmin(true);
           } else {
-            setPayload({
-              employee,
-              reviews,
-            });
+            setEmployeeId(employeeId)
 
             setIsAdmin(false);
           }
 
           setIsLoggedIn(true);
-        }
 
         setIsApiFetching(false);
-      });
+      })
 
     console.log('api fetched');
   }, [rehydrateAPI]);
 
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
 
   const appControls = {
     rehydrateAPI: () => setRehydrateAPI(prevState => !prevState),
@@ -108,7 +106,7 @@ export const App = () => {
                   <ProtectedRoute exact path='/' isLoggedIn={isLoggedIn}>
                     { isAdmin
                         ? <Redirect to='/admin' />
-                        : <Redirect to='/employee' />
+                        : <Redirect to={`/employee/${employeeId}/view`} />
                     }
                   </ProtectedRoute>
                   <Route path='/login'>
@@ -118,10 +116,10 @@ export const App = () => {
                     }
                   </Route>
                   <ProtectedRoute path='/admin' isLoggedIn={isLoggedIn}>
-                    <Admin payload={payload} />
+                    <Admin {...payload} />
                   </ProtectedRoute>
-                  <ProtectedRoute path='/employee' isLoggedIn={isLoggedIn}>
-                    <div>Employee page</div>
+                  <ProtectedRoute path='/employee/:id/:state' isLoggedIn={isLoggedIn}>
+                    <Employee {...payload} />
                   </ProtectedRoute>
                 </Switch>
           }

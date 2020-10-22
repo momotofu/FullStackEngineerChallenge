@@ -1,0 +1,209 @@
+import React, { useEffect, useState, useContext } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import {
+  Input,
+  InputLabel,
+  List,
+  ListItem,
+  ListItemText,
+  Paper,
+  Grid,
+  Avatar,
+  Typography,
+  Button,
+  ButtonGroup,
+} from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
+
+// Local imports
+import { APIContext } from '../../app';
+
+const useStyles = makeStyles((theme) => ({
+  input: {
+    marginBottom: theme.spacing(2),
+  },
+  avatar: {
+    width: '180px',
+    height: '180px',
+    marginBottom: theme.spacing(4),
+  },
+  listItem: {
+    marginBottom: theme.spacing(1)
+  },
+  title: {
+    marginBottom: theme.spacing(2)
+  }
+}));
+
+export enum Mode {
+  Edit = 'EDIT',
+  View = 'VIEW',
+}
+
+const initalEmployee = {
+  photoURL: '',
+  bio: '',
+  name: '',
+  email: '',
+  reviews: [],
+  assignedReviews: [],
+}
+
+export const Employee = (props) => {
+  const { admin } = props;
+  const [ employee, setEmployee ] = useState(initalEmployee);
+  const { id, state } = useParams();
+  const classes = useStyles();
+
+  // If not admin, user cannot edit profile
+  let mode: Mode = state == 'edit' && admin !== undefined
+    ? Mode.Edit
+    : Mode.View;
+
+  const {
+    photoURL,
+    bio,
+    name,
+    email,
+    reviews,
+    assignedReviews,
+  } = employee;
+
+  useEffect(() => {
+    // No need to fetch an employ because we're creating one.
+    if (id === 'null') {
+      return;
+    }
+
+    // Fetch employee data from the API
+    const url = `/api/employee/${id}`;
+
+    fetch(url)
+      .then(r => r.json())
+      .then(res => {
+        const { employee } = res;
+
+        console.log('setEmployee: ', employee, res);
+        setEmployee(employee);
+      });
+
+  }, []);
+
+  console.log('admin: ', admin);
+  
+  /**
+   * If there is an admin, show reviews owned by employee.
+   * If mode is edit, enable text fields
+   * If id param is create then make a employee
+   * Trigger rehydrate
+   */
+  return (
+    <>
+    <Grid container spacing={3}>
+      <Grid item xs={4}>
+        <Avatar alt={name} src={photoURL} className={classes.avatar} />
+        {renderTextField(mode, name, 'Name', classes)}
+        {mode == Mode.Edit
+          ? renderTextField(mode, photoURL, 'Photo URL', classes)
+          : ''
+        }
+        {renderTextField(mode, email, 'Email', classes)}
+        {renderTextField(mode, bio, 'Bio', classes)}
+      </Grid>
+      { admin && mode == Mode.Edit && <Grid item xs={8}>
+        <Button color='primary' variant='contained'>
+          Save
+        </Button>
+      </Grid> }
+      { admin && <Grid item xs={12}>
+        <Typography className={classes.title} component='h1' variant='h5'>
+          {`${name}'s reviews`}
+        </Typography>
+        {renderOwnedReviews(reviews, classes, () => {})}
+      </Grid> }
+      <Grid item xs={12}>
+        <Typography className={classes.title} component='h1' variant='h5'>
+          {`Reviews assigned to ${name}`}
+        </Typography>
+        {renderAssignedReviews(assignedReviews, classes, () => {})}
+      </Grid>
+    </Grid>
+    </>
+  )
+}
+
+function renderOwnedReviews(reviews, classes, callback) {
+  const listItems = reviews.map(review => {
+    const { reviewedBy, id } = review;
+
+    return (
+      <Paper className={classes.listItem} key={`ownedReview-${id}`}>
+        <ListItem
+          component={Link}
+          to='/'
+          onClick={callback}
+        >
+          <ListItemText primary={reviewedBy} />
+        </ListItem>
+      </Paper>
+    )
+  });
+
+  return (
+    <List>
+      {listItems}
+    </List>
+  )
+}
+
+function renderAssignedReviews(assignedReviews, classes, callback) {
+  const listItems = assignedReviews.map(review => {
+    const { reviewedBy, id } = review;
+
+    return (
+      <Paper className={classes.listItem} key={`ownedReview-${id}`}>
+        <ListItem
+          component={Link}
+          to='/'
+          onClick={callback}
+        >
+          <ListItemText primary={reviewedBy} />
+        </ListItem>
+      </Paper>
+    )
+  });
+
+  return (
+    <List>
+      {listItems}
+    </List>
+  )
+}
+
+function renderTextField(
+  mode: Mode,
+  value,
+  label,
+  classes,
+  onChange = (e) => console.log(e.target.value),
+) {
+  const isEdit = Boolean(mode == Mode.Edit);
+
+  return (
+    <>
+    <InputLabel>{label}</InputLabel>
+    <Input
+      className={classes.input}
+      multiline={true}
+      onChange={onChange}
+      readOnly={!isEdit}
+      value={value}
+      required={isEdit}
+      fullWidth
+      name={label}
+      type={label}
+      id={label}
+    />
+    </>
+  );
+}

@@ -14,9 +14,10 @@ import { makeStyles } from '@material-ui/core/styles';
 // Local imports
 import { APIContext } from '../../app';
 
-const useStyles = makeStyles((them) => ({
+const useStyles = makeStyles((theme) => ({
   container: {
     marginTop: '64px',
+    paddingTop: theme.spacing(8),
   },
   title: {
     flexGrow: 1,
@@ -44,6 +45,7 @@ export const Page = (props) => {
                   {title}
                 </Typography>
                 <Button
+                  variant='contained'
                   onClick={onLogoutClick(logoutURL, appControls)}>
                     Logout
                 </Button>
@@ -63,7 +65,7 @@ function renderBackButton(history, appControls) {
   }
 
   return (
-    <Button onClick={onClick}>
+    <Button onClick={onClick} variant='contained'>
       Back
     </Button>
   )

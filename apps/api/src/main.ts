@@ -8,6 +8,7 @@ import logger from 'morgan';
 import { dbConnector } from './ormconfg';
 import { isLoggedIn } from './app/utils';
 import { addLoginRoute } from './app/routes/login';
+import { addEmployeeRoute } from './app/routes/employee';
 import { addIndexRoute } from './app/routes/';
 import { getSeeds } from './seed';
 
@@ -39,7 +40,8 @@ getSeeds().then(seeds => {
 
     // Add routes to app
     addLoginRoute(app, apiPrefix, employeeRepository);
-    addIndexRoute(app, apiPrefix, employeeRepository, reviewRepository);
+    addIndexRoute(app, apiPrefix, employeeRepository);
+    addEmployeeRoute(app, apiPrefix, employeeRepository, reviewRepository);
 
     app.get(apiPrefix, (req, res) => {
       res.send({ message: 'Hello World'});

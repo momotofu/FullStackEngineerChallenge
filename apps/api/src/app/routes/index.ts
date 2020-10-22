@@ -2,45 +2,42 @@ export function addIndexRoute(
   app,
   prefix,
   employeeRepo,
-  reviewRepo
 ) {
   app.get(prefix, async (req, res) => {
     const employee = req.session.employee;
 
     if (employee == undefined) {
       const response = { error: 'Not logged in' };
-      return res.send(response);
+  
+      return res.status(400).send(response);
     }
 
     const isAdmin = employee.isAdmin;
     
     const employeeDetails = {
+      id: employee.id,
       name: employee.name,
       photoURL: employee.photoURL,
+      email: employee.email,
       bio: employee.bio,
     };
 
+    const employees = await employeeRepo.find();
 
     if (isAdmin) {
-      const employees = await employeeRepo.find();
       const response = {
-        employees: employees,
         isAdmin: true,
+        employees: employees,
         employee: employeeDetails,
       };
 
       return res.send(response);
     }
 
-    // Get reviews assigned to employee
-    const employeeID = employee.id;
-    const reviews = reviewRepo.find({ assignedTo: employeeID });
-
     // Prepare response
     const response = {
-      reviews: reviews,
       isAdmin: false,
-      employee: employeeDetails,
+      employeeId: employeeDetails.id,
     };
 
     res.send(response);
