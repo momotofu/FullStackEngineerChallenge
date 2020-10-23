@@ -41,6 +41,10 @@ Install Nx and Typeorm CLI
 npm i typeorm -g
 npm install -g nx
 ```
+Change into project directory and install depenencies.
+```
+npm i
+```
 
 Start API
 ```
@@ -61,6 +65,17 @@ Recommended login:
 
 You can view seeded employee credentials at `/apps/api/src/seed.ts`.\
 New employees you create will automatically have their email as their password.
+
+#### Additional info
+View database:
+```
+psql paypay
+```
+
+View tables:
+```
+psql \dt
+```
 
 ---
 <br />
