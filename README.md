@@ -27,7 +27,7 @@
 Note: Review views have not yet been implemented.
 
 ## Setup
-Development OS: MacOS Catalina
+Development OS: MacOS Catalina\
 Node version: v12.14.0
 
 Setup postgreSQL database
@@ -59,7 +59,7 @@ Recommended login:
   - Email: admin@finalstage.com
   - password: admin
 
-You can view seeded employee credentials at `/apps/api/src/seed.ts`.
+You can view seeded employee credentials at `/apps/api/src/seed.ts`.\
 New employees you create will automatically have their email as their password.
 
 ---
