@@ -63,6 +63,8 @@ You can view seeded employee credentials at `/apps/api/src/seed.ts`.\
 New employees you create will automatically have their email as their password.
 
 ---
+<br />
+<br />
 
 # Full Stack Developer Challenge
 This is an interview challengs. Please feel free to fork. Pull Requests will be ignored.
