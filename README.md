@@ -10,10 +10,10 @@
 - Sessions to handle login and employees
 
 #### Tooling: Nx Monorepo
-- Front-end:
+- Backend:
   - Node.js/Express.js
   - TypeORM 
-- Backend: 
+- Frontend: 
   - React.js
   - React Router
   - Typescript / JavaScript
