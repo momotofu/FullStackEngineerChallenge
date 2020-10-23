@@ -79,4 +79,13 @@ export function addEmployeeRoute(
 
     res.send(results);
   });
+
+  app.delete(`${prefix}/employee/:id`, adminOnlyRoute, async (req, res) => {
+    const { id } = req.params;
+    const employeeQuery = { id };
+
+    const results = await employeeRepo.delete(employeeQuery);
+
+    res.send(results);
+  });
 }

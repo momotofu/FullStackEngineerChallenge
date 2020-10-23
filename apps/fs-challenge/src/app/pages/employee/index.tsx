@@ -97,13 +97,10 @@ export const Employee = (props) => {
       .then(res => {
         const { employee } = res;
 
-        console.log('setEmployee: ', employee, res);
         setEmployee(employee);
       });
 
   }, []);
-
-  console.log('admin: ', admin);
   
   /**
    * If there is an admin, show reviews owned by employee.

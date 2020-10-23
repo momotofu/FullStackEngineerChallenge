@@ -44,7 +44,7 @@ export const App = () => {
 
     /**
      * The main api request that hydrates the app with the
-     * employee[object], employees[array], and reviews[array] data.
+     * employee[object], employees[array], and data.
      * Data recieved depends on whether the employee has admin
      * privliges or not.
      */

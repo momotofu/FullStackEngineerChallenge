@@ -22,12 +22,15 @@ export function addIndexRoute(
       bio: employee.bio,
     };
 
+    // Get employees and remove requesting employee
+    // from returned array of employees.
     const employees = await employeeRepo.find();
+    const filteredEmployees = employees.filter(emp => emp.id !== employee.id);
 
     if (isAdmin) {
       const response = {
         isAdmin: true,
-        employees: employees,
+        employees: filteredEmployees,
         employee: employeeDetails,
       };
 
