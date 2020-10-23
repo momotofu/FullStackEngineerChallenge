@@ -10,15 +10,14 @@
 - Sessions to handle login and employees
 
 #### Tooling: Nx Monorepo
-  Technologies:
-    - Front-end:
-      - Node.js/Express.js
-      - TypeORM 
-    - Backend: 
-      - React.js
-      - React Router
-      - Typescript / JavaScript
-      - Material-UI
+- Front-end:
+  - Node.js/Express.js
+  - TypeORM 
+- Backend: 
+  - React.js
+  - React Router
+  - Typescript / JavaScript
+  - Material-UI
     
 #### UX:
 - Employee login/logout
